@@ -16,7 +16,7 @@
     "services": {}
   },
 
-  "socketfunctions": {
+  "servicefunctions": {
     "createCh": {
       "displayname": "Create a channel.",
       "description": "Create a NoTalk channel.",
