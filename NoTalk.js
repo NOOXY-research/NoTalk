@@ -10,7 +10,9 @@ function NoTalk(Me, NoService) {
   let _models;
   let _on = {
     "message": ()=> {},
-    "channelcreated": ()=> {}
+    "channelcreated": ()=> {},
+    "channelmemberadded": ()=> {},
+
   };
 
   this.on = (event, callback) => {
@@ -27,7 +29,7 @@ function NoTalk(Me, NoService) {
 
   this.getUserChannels = (userid, callback)=> {
     let channels = {};
-    _models.ChUserPair.getByFirst(userid, (err, pairs)=> {
+    _models.ChUserPair.getBySecond(userid, (err, pairs)=> {
       let chs = pairs.map((pair) => {
         return pair.ChId
       });

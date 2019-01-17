@@ -24,6 +24,18 @@ function Service(Me, NoService) {
 
   // Your service entry point
   this.start = ()=> {
+    NoTalk.on('message', ()=> {
+
+    });
+
+    NoTalk.on('channelcreated', ()=> {
+
+    });
+
+    NoTalk.on('channelmemberadded', ()=> {
+
+    });
+
     NoTalk.launch((err)=> {
       if(err) {
         console.log(err);
@@ -69,13 +81,11 @@ function Service(Me, NoService) {
         ss.def('getMyChs', (json, entityId, returnJSON)=> {
           NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
             if(valid) {
-              NoService.Service.Entity.getEntityOwner(entityId, (err, name)=>{
                 NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
                   NoTalk.getUserChannels(id, (err, channels)=> {
                     returnJSON(false, channels);
                   });
                 });
-              });
             }
             else {
               returnJSON(false, {});
