@@ -28,6 +28,30 @@
     }
   },
 
+  "ChTagPair": {
+    "model_type": "Pair",
+    "model_key": ["ChId", "Tag"],
+    "do_timestamp": false,
+    "structure": {
+      "ChId" : "VARCHAR(255)",
+      "Tag" : "VARCHAR(255)"
+    }
+  },
+
+  "ChUserPair": {
+    "model_type": "Pair",
+    "model_key": ["ChId", "UserId"],
+    "do_timestamp": true,
+    "structure": {
+      "ChId" : "VARCHAR(255)",
+      "UserId" : "VARCHAR(255)",
+      "Permition": "INTEGER",
+      "LatestRLn": "INTEGER",
+      "Addedby": "VARCHAR(255)",
+      "Mute": "INTEGER"
+    }
+  },
+
   "Message": {
     "model_type": "GroupIndexedList",
     "do_timestamp": true,
@@ -41,6 +65,18 @@
       "Thumbnail": "TEXT",
       "Lines": "INTEGER",
       "CreatorId": "VARCHAR(255)"
+    }
+  },
+
+
+  "UserRel": {
+    "model_type": "Pair",
+    "model_key": ["UserId", "ToUserId"],
+    "do_timestamp": false,
+    "structure": {
+      "UserId" : "VARCHAR(255)",
+      "ToUserId" : "VARCHAR(255)",
+      "Type": "INTEGER"
     }
   }
 }

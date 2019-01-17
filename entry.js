@@ -3,7 +3,6 @@
 // "youservice/entry.js" description.
 // Copyright 2018 NOOXY. All Rights Reserved.
 
-let NoTalk = require('./NoTalk');
 let fs = require('fs');
 
 function Service(Me, NoService) {
@@ -20,12 +19,12 @@ function Service(Me, NoService) {
   // Your settings in manifest file.
   let settings = Me.Settings;
 
-  let notalk = new NoTalk(Me, NoService);
+  let NoTalk = new (require('./NoTalk'))(Me, NoService);
 
 
   // Your service entry point
   this.start = ()=> {
-    notalk.launch((err)=> {
+    NoTalk.launch((err)=> {
       if(err) {
         console.log(err);
       }
@@ -33,8 +32,8 @@ function Service(Me, NoService) {
         ss.on('connect', (entityId, callback)=> {
           NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
             if(valid) {
-              NoService.Service.Entity.getEntityOwner(entityId, (err, username)=>{
-                NoService.Service.Entity.addEntityToGroups(entityId, [username], (err)=> {
+              NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
+                NoService.Service.Entity.addEntityToGroups(entityId, [id], (err)=> {
                   callback(err);
                 });
               });
@@ -45,13 +44,52 @@ function Service(Me, NoService) {
           });
         });
 
+        ss.def('createCh', (json, entityId, returnJSON)=> {
+          NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
+            if(valid) {
+              NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
+                json.c = id;
+                NoTalk.createChannel(json, (err)=> {
+                  if(err) {
+                    returnJSON(false, {e: err.stack, s:err.toString()});
+                  }
+                  else {
+                    returnJSON(false, {s: "OK"});
+                  }
+
+                });
+              });
+            }
+            else {
+              returnJSON(false, {s: "Auth failed"});
+            }
+          });
+        });
+
+        ss.def('getMyChs', (json, entityId, returnJSON)=> {
+          NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
+            if(valid) {
+              NoService.Service.Entity.getEntityOwner(entityId, (err, name)=>{
+                NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
+                  NoTalk.getUserChannels(id, (err, channels)=> {
+                    returnJSON(false, channels);
+                  });
+                });
+              });
+            }
+            else {
+              returnJSON(false, {});
+            }
+          });
+        });
+
         ss.def('getMyMeta', (json, entityId, returnJSON)=> {
           NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
             if(valid) {
-              NoService.Service.Entity.getEntityOwner(entityId, (err, r)=>{
-                NoService.Authenticity.getUserID(r, (err, id)=>{
-                  notalk.getUserMeta(id, (err, meta)=> {
-                    meta.n = r;
+              NoService.Service.Entity.getEntityOwner(entityId, (err, name)=>{
+                NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
+                  NoTalk.getUserMeta(id, (err, meta)=> {
+                    meta.n = name;
                     returnJSON(false, meta);
                   });
                 });
@@ -66,17 +104,15 @@ function Service(Me, NoService) {
         ss.def('updateMyMeta', (json, entityId, returnJSON)=> {
           NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
             if(valid) {
-              NoService.Service.Entity.getEntityOwner(entityId, (err, r)=>{
-                NoService.Authenticity.getUserID(r, (err, id)=>{
-                  notalk.updateUserMeta(id, json, (err)=> {
-                    if(err) {
-                      returnJSON(false, {s:err});
-                    }
-                    else {
-                      ss.emitToGroups([r], 'MyMetaUpdated', json);
-                      returnJSON(false, {s:'OK'});
-                    }
-                  });
+              NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
+                NoTalk.updateUserMeta(id, json, (err)=> {
+                  if(err) {
+                    returnJSON(false, {s:err});
+                  }
+                  else {
+                    ss.emitToGroups([id], 'MyMetaUpdated', json);
+                    returnJSON(false, {s:'OK'});
+                  }
                 });
               });
             }

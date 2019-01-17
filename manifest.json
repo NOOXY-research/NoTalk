@@ -28,9 +28,10 @@
       "protocol": {
         "call": {
           "t": "Type of channel for example 'live' or 'normal'",
-          "p": "Privaty of channel for example 'public', 'locked' or 'private'",
+          "v": "Privaty of channel 0-6",
           "n": "Channel's name.",
-          "d": "Channel's discribtion."
+          "v": "Visability",
+          "d": "Channel's describtion."
         },
         "return": {
           "s": "Status.",
