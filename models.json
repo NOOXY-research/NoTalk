@@ -7,7 +7,8 @@
       "UserId" : "VARCHAR(255)",
       "Bio" : "VARCHAR(320)",
       "ShowActive" : "INTEGER",
-      "LatestOnline" : "DATE"
+      "LatestOnline" : "DATE",
+      "ClientPreference" : "TEXT"
     }
   },
 
@@ -19,7 +20,7 @@
       "ChId" : "VARCHAR(255)",
       "Type" : "INTEGER",
       "Description" : "VARCHAR(320)",
-      "Visability" : "INTEGER",
+      "AccessLevel" : "INTEGER",
       "Displayname": "VARCHAR(255)",
       "Status": "INTEGER",
       "Thumbnail": "TEXT",
@@ -45,7 +46,7 @@
     "structure": {
       "ChId" : "VARCHAR(255)",
       "UserId" : "VARCHAR(255)",
-      "Permition": "INTEGER",
+      "Role": "INTEGER",
       "LatestRLn": "INTEGER",
       "Addedby": "VARCHAR(255)",
       "Mute": "INTEGER"
@@ -56,15 +57,10 @@
     "model_type": "GroupIndexedList",
     "do_timestamp": true,
     "structure": {
-      "ChId" : "VARCHAR(255)",
-      "Type" : "INTEGER",
-      "Description" : "VARCHAR(320)",
-      "Visability" : "INTEGER",
-      "Displayname": "VARCHAR(255)",
-      "Status": "INTEGER",
-      "Thumbnail": "TEXT",
-      "Lines": "INTEGER",
-      "CreatorId": "VARCHAR(255)"
+      "UserId": "VARCHAR(255)",
+      "Type": "INTEGER",
+      "Contain": "TEXT",
+      "Detail": "TEXT"
     }
   },
 

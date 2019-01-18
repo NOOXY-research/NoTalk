@@ -12,7 +12,6 @@ function NoTalk(Me, NoService) {
     "message": ()=> {},
     "channelcreated": ()=> {},
     "channelmemberadded": ()=> {},
-
   };
 
   this.on = (event, callback) => {
@@ -101,7 +100,49 @@ function NoTalk(Me, NoService) {
 
   };
 
-  this.sendMessage = (meta, callback)=> {
+  this.sendMessage = (senderId, channelid, meta, callback)=> {
+    let _send = ()=> {
+      _models.Message.appendRows(channelid, [{Type:meta[0], Contain:meta[1], Detail:meta[2], UserId: senderId}]);
+      callback(false);
+    };
+    if(senderId) {
+      _models.ChUserPair.getByBoth([meta.i, senderId], (err, [pair])=> {
+
+        if(pair == null|| pair.Role>1) {
+          _models.ChMeta.get(channelid, (err, chmeta)=> {
+            if(chmeta.AccessLevel>=4) {
+              _send();
+            }
+            else {
+              callback(new Error("You have no sendMessage permition."));
+            }
+          });
+        }
+        else if(pair.Role==0) {
+          _send();
+        }
+        else if(pair.Role==1){
+          _models.ChMeta.get(channelid, (err, chmeta)=> {
+            if(chmeta.AccessLevel>=1) {
+              _send();
+            }
+            else {
+              callback(new Error("You have no sendMessage permition."));
+            }
+          });
+        }
+      });
+    }
+    else {
+      _models.ChMeta.get(channelid, (err, chmeta)=> {
+        if(chmeta.AccessLevel>=5) {
+          _send();
+        }
+        else {
+          callback(new Error("You have no sendMessage permition."));
+        }
+      });
+    }
 
   };
 

@@ -4,6 +4,8 @@
 // Copyright 2018 NOOXY. All Rights Reserved.
 
 let fs = require('fs');
+const USERID_PREFIX = "UserId_";
+const CHID_PREFIX = "ChId_";
 
 function Service(Me, NoService) {
   // Your service entry point
@@ -45,7 +47,7 @@ function Service(Me, NoService) {
           NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
             if(valid) {
               NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
-                NoService.Service.Entity.addEntityToGroups(entityId, [id], (err)=> {
+                NoService.Service.Entity.addEntityToGroups(entityId, [USERID_PREFIX+id], (err)=> {
                   callback(err);
                 });
               });
@@ -74,6 +76,29 @@ function Service(Me, NoService) {
             }
             else {
               returnJSON(false, {s: "Auth failed"});
+            }
+          });
+        });
+
+        ss.def('bindCh', (json, entityId, returnJSON)=> {
+          NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
+            if(valid) {
+              let index = 0;
+              op = ()=> {
+                NoService.Service.Entity.addEntityToGroups(entityId, [CHID_PREFIX+json.i[index]], (err)=> {
+                  index++;
+                  if(index<json.i.length) {
+                    op();
+                  }
+                  else {
+                    returnJSON(false, {s: "OK"});
+                  }
+                });
+              };
+              op();
+            }
+            else {
+              returnJSON(false, {e:true, s: "Auth failed"});
             }
           });
         });
@@ -120,7 +145,7 @@ function Service(Me, NoService) {
                     returnJSON(false, {s:err});
                   }
                   else {
-                    ss.emitToGroups([id], 'MyMetaUpdated', json);
+                    ss.emitToGroups([USERID_PREFIX+id], 'MyMetaUpdated', json);
                     returnJSON(false, {s:'OK'});
                   }
                 });
