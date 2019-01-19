@@ -57,7 +57,7 @@ function NoTalk(Me, NoService) {
         ChId: uuid,
         Type: meta.t,
         Description: meta.d,
-        Visability: meta.v,
+        AccessLevel: meta.v,
         Displayname: meta.n,
         Status: 0,
         Thumbnail: meta.p, // abrev photo
