@@ -61,7 +61,6 @@ function NoTalk(Me, NoService) {
         Displayname: meta.n,
         Status: 0,
         Thumbnail: meta.p, // abrev photo
-        Lines: 0,
         CreatorId: meta.c
       };
       // update metatdata
