@@ -27,15 +27,15 @@ function Service(Me, NoService) {
   // Your service entry point
   this.start = ()=> {
     NoTalk.on('message', (err, channelid, meta)=> {
-      ss.emitToGroups([CHID_PREFIX+channelid], 'message', {i:channelid, r:meta});
+      ss.emitToGroups([CHID_PREFIX+channelid], 'Message', {i:channelid, r:meta});
     });
 
     NoTalk.on('channelcreated', ()=> {
 
     });
 
-    NoTalk.on('channelmemberadded', ()=> {
-
+    NoTalk.on('addedtochannel', (err, userid, meta)=> {
+      ss.emitToGroups([USERID_PREFIX+userid], 'AddedToChannel', {i:meta.ChId, r:meta});
     });
 
     NoTalk.launch((err)=> {
