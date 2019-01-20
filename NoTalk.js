@@ -80,7 +80,7 @@ function NoTalk(Me, NoService) {
               if(!err) {
                 _on['channelcreated'](err, new_meta);
                 _on['addedtochannel'](err, meta.c, new_meta);
-                callback(err);
+                callback(err, uuid);
               }
               else {
                 _models.ChMeta.remove(uuid, (e)=> {

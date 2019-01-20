@@ -63,12 +63,12 @@ function Service(Me, NoService) {
             if(valid) {
               NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
                 json.c = id;
-                NoTalk.createChannel(json, (err)=> {
+                NoTalk.createChannel(json, (err, chid)=> {
                   if(err) {
                     returnJSON(false, {e: err.stack, s:err.toString()});
                   }
                   else {
-                    returnJSON(false, {s: "OK"});
+                    returnJSON(false, {s: "OK", i:chid});
                   }
 
                 });
