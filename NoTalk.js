@@ -111,7 +111,7 @@ function NoTalk(Me, NoService) {
         ChId: uuid,
         Type: meta.t,
         Description: meta.d,
-        AccessLevel: meta.v,
+        AccessLevel: meta.a,
         Displayname: meta.n,
         Status: 0,
         Thumbnail: meta.p, // abrev photo
@@ -143,6 +143,46 @@ function NoTalk(Me, NoService) {
               }
             });
           }
+      });
+    }
+    else {
+      callback(new Error('Channel metadata is not complete.'));
+    }
+  };
+
+  // update a channel
+  this.updateChannel = (modifyerId, meta, callback)=> {
+
+    if(meta.i!=null) {
+      _models.ChUserPair.getByPair([meta.i, modifyerId], (err, [pair])=> {
+        if(pair&&pair.Role==0) {
+          let new_meta = {
+            ChId: meta.i,
+            Type: meta.t,
+            Description: meta.d,
+            AccessLevel: meta.a,
+            Displayname: meta.n,
+            Thumbnail: meta.p, // abrev photo
+          };
+          for(let key in new_meta) {
+            if(!new_meta[key]) {
+              delete new_meta[key];
+            }
+          }
+          // update metatdata
+          _models.ChMeta.update(new_meta, (err)=> {
+            if(err) {
+              callback(err);
+            }
+            else {
+              callback(err);
+              _on["channelupdated"](err, new_meta);
+            }
+          });
+        }
+        else {
+          callback(new Error('You have no permission to edit this channel.'));
+        }
       });
     }
     else {
