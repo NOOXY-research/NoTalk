@@ -106,7 +106,7 @@ function NoTalk(Me, NoService) {
   // create a channel
   this.createChannel = (meta, callback)=> {
     let uuid = NoService.Library.Utilities.generateGUID();
-    if(meta.n!=null&&meta.t!=null&&meta.v!=null&&meta.c!=null) {
+    if(meta.n!=null&&meta.t!=null&&meta.a!=null&&meta.c!=null) {
       let new_meta = {
         ChId: uuid,
         Type: meta.t,
@@ -165,7 +165,7 @@ function NoTalk(Me, NoService) {
             Thumbnail: meta.p, // abrev photo
           };
           for(let key in new_meta) {
-            if(!new_meta[key]) {
+            if(new_meta[key]==null) {
               delete new_meta[key];
             }
           }
