@@ -228,7 +228,7 @@ function NoTalk(Me, NoService) {
         _models.Message.getRowsFromTo(channelid, meta.b, meta.b+meta.r-1, (err, rows)=> {
           let result = {};
           for(let i in rows) {
-            result[rows[i].Idx] = [rows[i].UserId, rows[i].Type, rows[i].Contain, rows[i].Detail];
+            result[rows[i].Idx] = [rows[i].UserId, rows[i].Type, rows[i].Contain, rows[i].Detail, row[i].modifydate];
           }
           callback(false, result);
         })
@@ -237,7 +237,7 @@ function NoTalk(Me, NoService) {
         _models.Message.getLatestNRows(channelid, meta.r, (err, rows)=> {
           let result = {};
           for(let i in rows) {
-            result[rows[i].Idx] = [rows[i].UserId, rows[i].Type, rows[i].Contain, rows[i].Detail];
+            result[rows[i].Idx] = [rows[i].UserId, rows[i].Type, rows[i].Contain, rows[i].Detail, rows[i].modifydate];
           }
           callback(false, result);
         })
@@ -293,7 +293,7 @@ function NoTalk(Me, NoService) {
           callback(err);
         }
         else {
-          _on['message'](err, channelid, [userid, meta[0], meta[1], meta[2]]);
+          _on['message'](err, channelid, [userid, meta[0], meta[1], meta[2], (new Date()).toString()]);
           callback(err);
         }
       });
