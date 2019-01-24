@@ -381,6 +381,9 @@ function NoTalk(Me, NoService) {
       else if(key=='a') {
         new_meta.ShowActive = meta.a;
       }
+      else if(key=='l') {
+        new_meta.LatestOnline = meta.l;
+      }
     }
     _models.User.update(new_meta, callback);
   }

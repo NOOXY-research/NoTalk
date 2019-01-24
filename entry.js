@@ -27,6 +27,12 @@ function Service(Me, NoService) {
   // Your service entry point
   this.start = ()=> {
     NoService.Service.ActivitySocket.createDefaultAdminDeamonSocket('NoUser', (err, NoUser)=> {
+      ss.on('close', (entityId, callback)=> {
+        NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
+          NoTalk.updateUserMeta(id, {l:NoService.Library.Utilities.DatetoSQL(new Date())}, callback);
+        });
+      });
+
       NoTalk.on('message', (err, channelid, meta)=> {
         ss.emitToGroups([CHID_PREFIX+channelid], 'Message', {i:channelid, r:meta});
       });
@@ -251,6 +257,32 @@ function Service(Me, NoService) {
                       });
                     });
                   });
+                });
+
+              }
+              else {
+                returnJSON(false, {});
+              }
+            });
+          });
+
+          ss.def('getUserAct', (json, entityId, returnJSON)=> {
+            NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
+              if(valid) {
+                NoTalk.getUserMeta(json.i, (err, meta)=> {
+                  if(meta.ShowActive == false) {
+                    returnJSON(false, {});
+                  }
+                  else {
+                    NoService.Service.Entity.getFilteredEntitiesList("mode=normal,service=NoTalk,ownerid="+json.i, (err, list)=>{
+                      if(list.length) {
+                        returnJSON(false, {r: true});
+                      }
+                      else {
+                        returnJSON(false, {r: meta.l});
+                      }
+                    });
+                  }
                 });
 
               }
