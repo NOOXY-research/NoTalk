@@ -270,7 +270,7 @@ function Service(Me, NoService) {
             NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
               if(valid) {
                 NoTalk.getUserMeta(json.i, (err, meta)=> {
-                  if(meta.a == false) {
+                  if(meta.a == 1) {
                     returnJSON(false, {});
                   }
                   else {
