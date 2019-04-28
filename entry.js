@@ -262,25 +262,25 @@ function Service(Me, NoService) {
           });
 
           ss.def('bindChs', (json, entityId, returnJSON)=> {
-            let channel_list = [];
-            let index = 0;
-            let check_next = ()=> {
-              if(index<channel_list.length) {
-                NoTalk.canViewCh(id, json.i[index], (err, role, latestreadline)=> {
-                  if(err) {
-                    index++;
-                    check_next();
-                  }
-                  else {
-                    channel_list.push(json.i[index]);
-                    index++;
-                    check_next();
-                  }
-                });
-              }
-              else {
-                NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
-                  if(id) {
+            NoService.Service.Entity.getEntityOwnerId(entityId, (err, user_id)=>{
+              let channel_list = [];
+              let index = 0;
+              let check_next = ()=> {
+                if(index<json.i.length) {
+                  NoTalk.canViewCh(user_id, json.i[index], (err, role, latestreadline)=> {
+                    if(err) {
+                      index++;
+                      check_next();
+                    }
+                    else {
+                      channel_list.push(json.i[index]);
+                      index++;
+                      check_next();
+                    }
+                  });
+                }
+                else {
+                  if(user_id) {
                     NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
                       if(valid) {
                         NoService.Service.Entity.addEntityToGroups(entityId, channel_list.map(id=>{return(CHID_PREFIX+id)}), (err)=> {
@@ -297,10 +297,11 @@ function Service(Me, NoService) {
                         returnJSON(false, {s: "OK"});
                     });
                   }
-                });
-              }
-            };
-            check_next();
+                }
+              };
+              check_next();
+            });
+
           });
 
           ss.def('getMyChs', (json, entityId, returnJSON)=> {
