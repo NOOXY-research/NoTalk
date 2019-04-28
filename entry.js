@@ -429,7 +429,14 @@ function Service(Me, NoService) {
           });
 
           ss.def('getChMeta', (json, entityId, returnJSON)=> {
-
+            NoTalk.getChannelMeta(id, json.c, (err, meta)=> {
+              if(err) {
+                returnJSON(false, {e: err.stack, s:err.toString()});
+              }
+              else {
+                returnJSON(false, meta);
+              }
+            });
           });
 
           ss.def('delCh', (json, entityId, returnJSON)=> {
