@@ -262,16 +262,45 @@ function Service(Me, NoService) {
           });
 
           ss.def('bindChs', (json, entityId, returnJSON)=> {
-            NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
-              if(valid) {
-                NoService.Service.Entity.addEntityToGroups(entityId, json.i.map(id=>{return(CHID_PREFIX+id)}), (err)=> {
-                    returnJSON(false, {s: "OK"});
+            let channel_list = [];
+            let index = 0;
+            let check_next = ()=> {
+              if(index<channel_list.length) {
+                NoTalk.canViewCh(id, json.i[index], (err, role, latestreadline)=> {
+                  if(err) {
+                    index++;
+                    check_next();
+                  }
+                  else {
+                    channel_list.push(json.i[index]);
+                    index++;
+                    check_next();
+                  }
                 });
               }
               else {
-                returnJSON(false, {e:true, s: "Auth failed"});
+                NoService.Service.Entity.getEntityOwnerId(entityId, (err, id)=>{
+                  if(id) {
+                    NoService.Authorization.Authby.Token(entityId, (err, valid)=> {
+                      if(valid) {
+                        NoService.Service.Entity.addEntityToGroups(entityId, channel_list.map(id=>{return(CHID_PREFIX+id)}), (err)=> {
+                            returnJSON(false, {s: "OK"});
+                        });
+                      }
+                      else {
+                        returnJSON(false, {e:true, s: "Auth failed"});
+                      }
+                    });
+                  }
+                  else {
+                    NoService.Service.Entity.addEntityToGroups(entityId, channel_list.map(id=>{return(CHID_PREFIX+id)}), (err)=> {
+                        returnJSON(false, {s: "OK"});
+                    });
+                  }
+                });
               }
-            });
+            };
+            check_next();
           });
 
           ss.def('getMyChs', (json, entityId, returnJSON)=> {
