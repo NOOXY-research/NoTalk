@@ -56,6 +56,9 @@ function NoTalk(Me, NoService) {
       if(err) {
         callback(err);
       }
+      else if(!meta) {
+        callback(new Error('Meta of '+channelId+' does not exists.'));
+      }
       else {
         callback(false, {
           "o": meta.CreatorId,
